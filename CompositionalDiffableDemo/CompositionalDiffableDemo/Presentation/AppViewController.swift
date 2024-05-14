@@ -12,9 +12,16 @@ import Then
 
 final class AppViewController: UIViewController {
     
-    typealias AppDataSource = UICollectionViewDiffableDataSource<AppSection, AppSectionItem>
-    typealias FeatureRegistration = UICollectionView.CellRegistration<FeatureCell, Feature>
-    typealias RankingFeatureRegistration = UICollectionView.CellRegistration<RankingFeatureCell, RankingFeature>
+    private enum SupplementaryKind {
+        static let header = "section-header-element-kind"
+        static let footer = "section-footer-element-kind"
+    }
+    
+    fileprivate typealias AppDataSource = UICollectionViewDiffableDataSource<AppSection, AppSectionItem>
+    private typealias FeatureRegistration = UICollectionView.CellRegistration<FeatureCell, Feature>
+    private typealias RankingFeatureRegistration = UICollectionView.CellRegistration<RankingFeatureCell, RankingFeature>
+    private typealias HeaderRegistration = UICollectionView.SupplementaryRegistration<HeaderView>
+    private typealias FooterRegistration = UICollectionView.SupplementaryRegistration<FooterView>
     
     private lazy var appDataSource = configureAppDataSource()
     
@@ -33,11 +40,6 @@ final class AppViewController: UIViewController {
         }).then {
             $0.showsHorizontalScrollIndicator = false
             $0.contentInset = .zero
-            
-//            $0.register(
-//                FeatureCell.self,
-//                forCellWithReuseIdentifier: FeatureCell.identifier
-//            )
         }
     
     override func viewDidLoad() {
@@ -46,8 +48,11 @@ final class AppViewController: UIViewController {
         setupNavigationController()
         setupLayout()
         applyInitialSnapshots()
+        configureSupplementaryViewRegistration()
     }
 }
+
+// MARK: - Private Methods
 
 private extension AppViewController {
     func setupNavigationController() {
@@ -82,6 +87,13 @@ private extension AppViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
         
+        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1)),
+            elementKind: SupplementaryKind.footer,
+            alignment: .bottom
+        )
+        section.boundarySupplementaryItems = [sectionFooter]
+        
         return section
     }
     
@@ -102,6 +114,18 @@ private extension AppViewController {
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
+        
+        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50)),
+            elementKind: SupplementaryKind.header,
+            alignment: .top
+        )
+        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1)),
+            elementKind: SupplementaryKind.footer,
+            alignment: .bottom
+        )
+        section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
         
         return section
     }
@@ -151,6 +175,26 @@ private extension AppViewController {
                 )
 //            case .themeFeature(_):
 //                return UICollectionViewCell()
+            }
+        }
+    }
+    
+    func configureSupplementaryViewRegistration() {
+        let headerRegistration = HeaderRegistration(elementKind: SupplementaryKind.header) { view, _, indexPath in
+            view.prepare(title: "지금 주목해야 할 앱", description: "새로 나온 앱과 업데이트")
+        }
+        
+        let footerRegistration = FooterRegistration(elementKind: SupplementaryKind.footer) { view, _, indexPath in
+        }
+        
+        appDataSource.supplementaryViewProvider = { [weak self] _ , kind, index in
+            switch kind {
+            case SupplementaryKind.header:
+                return self?.collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: index)
+            case SupplementaryKind.footer:
+                return self?.collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: index)
+            default:
+                return UICollectionReusableView()
             }
         }
     }

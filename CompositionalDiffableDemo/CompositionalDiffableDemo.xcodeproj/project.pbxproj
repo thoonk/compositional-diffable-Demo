@@ -18,6 +18,7 @@
 		6A1365BF2BF1D4C10037CD4D /* FeatureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1365BE2BF1D4C10037CD4D /* FeatureCell.swift */; };
 		6A1365D22BF2093D0037CD4D /* SnapKit in Frameworks */ = {isa = PBXBuildFile; productRef = 6A1365D12BF2093D0037CD4D /* SnapKit */; };
 		6A1365D42BF20DBE0037CD4D /* RankingFeatureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1365D32BF20DBE0037CD4D /* RankingFeatureCell.swift */; };
+		6A1365D62BF328090037CD4D /* ThemeFeatureCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1365D52BF328090037CD4D /* ThemeFeatureCell.swift */; };
 		6A1365D82BF32BC50037CD4D /* HeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1365D72BF32BC50037CD4D /* HeaderView.swift */; };
 		6A1365DA2BF3337C0037CD4D /* FooterView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A1365D92BF3337C0037CD4D /* FooterView.swift */; };
 /* End PBXBuildFile section */
@@ -47,6 +48,7 @@
 		6A1365BC2BF1CCFE0037CD4D /* AppSection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSection.swift; sourceTree = "<group>"; };
 		6A1365BE2BF1D4C10037CD4D /* FeatureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureCell.swift; sourceTree = "<group>"; };
 		6A1365D32BF20DBE0037CD4D /* RankingFeatureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RankingFeatureCell.swift; sourceTree = "<group>"; };
+		6A1365D52BF328090037CD4D /* ThemeFeatureCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeFeatureCell.swift; sourceTree = "<group>"; };
 		6A1365D72BF32BC50037CD4D /* HeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeaderView.swift; sourceTree = "<group>"; };
 		6A1365D92BF3337C0037CD4D /* FooterView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FooterView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -116,6 +118,7 @@
 				6A13659D2BEDDEA10037CD4D /* AppViewController.swift */,
 				6A1365BE2BF1D4C10037CD4D /* FeatureCell.swift */,
 				6A1365D32BF20DBE0037CD4D /* RankingFeatureCell.swift */,
+				6A1365D52BF328090037CD4D /* ThemeFeatureCell.swift */,
 				6A1365D72BF32BC50037CD4D /* HeaderView.swift */,
 				6A1365D92BF3337C0037CD4D /* FooterView.swift */,
 				6A1365BC2BF1CCFE0037CD4D /* AppSection.swift */,
@@ -210,6 +213,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A1365D62BF328090037CD4D /* ThemeFeatureCell.swift in Sources */,
 				6A1365D82BF32BC50037CD4D /* HeaderView.swift in Sources */,
 				6A13659E2BEDDEA10037CD4D /* AppViewController.swift in Sources */,
 				6A1365DA2BF3337C0037CD4D /* FooterView.swift in Sources */,

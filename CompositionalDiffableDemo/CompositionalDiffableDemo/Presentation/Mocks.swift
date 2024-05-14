@@ -24,12 +24,11 @@ enum Mocks {
         .rankingFeature(RankingFeature(title: "배달요기요 - 기다림 없는 맛집 배달앱", description: "매일매일 할인 받는 배달앱", isInAppPurchase: false))
     ]
     
-//    static let themeFeatures: AppSectionItem =
-//        .themeFeature([
-//            .init(title: "필수 금융 앱 10"),
-//            .init(title: "필수 생산성 앱 10"),
-//            .init(title: "필수 엔터테인먼트 앱 10"),
-//            .init(title: "필수 사진 앱 10"),
-//            .init(title: "필수 마음챙김 앱 10")
-//        ])
+    static let themeFeatures: [AppSectionItem] = [
+        .themeFeature(ThemeFeature(title: "필수 금융 앱 10")),
+        .themeFeature(ThemeFeature(title: "필수 생산성 앱 10")),
+        .themeFeature(ThemeFeature(title: "필수 엔터테인먼트 앱 10")),
+        .themeFeature(ThemeFeature(title: "필수 사진 앱 10")),
+        .themeFeature(ThemeFeature(title: "필수 마음챙김 앱 10"))
+    ]
 }

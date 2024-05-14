@@ -20,6 +20,7 @@ final class AppViewController: UIViewController {
     fileprivate typealias AppDataSource = UICollectionViewDiffableDataSource<AppSection, AppSectionItem>
     private typealias FeatureRegistration = UICollectionView.CellRegistration<FeatureCell, Feature>
     private typealias RankingFeatureRegistration = UICollectionView.CellRegistration<RankingFeatureCell, RankingFeature>
+    private typealias ThemeFeatureRegistration = UICollectionView.CellRegistration<ThemeFeatureCell, ThemeFeature>
     private typealias HeaderRegistration = UICollectionView.SupplementaryRegistration<HeaderView>
     private typealias FooterRegistration = UICollectionView.SupplementaryRegistration<FooterView>
     
@@ -34,8 +35,8 @@ final class AppViewController: UIViewController {
                 return self.getLayoutFeatureSection()
             case .rankingFeature:
                 return self.getLayoutRankingFeatureSection()
-//            case .themeFeature:
-//                return self.getLayoutThemeFeatureSection()
+            case .themeFeature:
+                return self.getLayoutThemeFeatureSection()
             }
         }).then {
             $0.showsHorizontalScrollIndicator = false
@@ -76,7 +77,7 @@ private extension AppViewController {
         )
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets  = NSDirectionalEdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8)
+        item.contentInsets  = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
         
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.9),
@@ -104,7 +105,7 @@ private extension AppViewController {
         )
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets  = NSDirectionalEdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8)
+        item.contentInsets  = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
         
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.9),
@@ -132,21 +133,29 @@ private extension AppViewController {
     
     func getLayoutThemeFeatureSection() -> NSCollectionLayoutSection {
         let itemSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.7),
+            widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
         )
         
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
-        item.contentInsets  = NSDirectionalEdgeInsets(top: 12, leading: 8, bottom: 12, trailing: 8)
+        item.contentInsets  = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
         
         let groupSize = NSCollectionLayoutSize(
-            widthDimension: .fractionalWidth(0.9),
-            heightDimension: .fractionalHeight(0.3)
+            widthDimension: .fractionalWidth(0.65),
+            heightDimension: .fractionalHeight(0.25)
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
+        group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0)
         
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
+        
+        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1)),
+            elementKind: SupplementaryKind.footer,
+            alignment: .bottom
+        )
+        section.boundarySupplementaryItems = [sectionFooter]
         
         return section
     }
@@ -156,6 +165,9 @@ private extension AppViewController {
             cell.prepare(with: feature)
         }
         let rankingFeatureCellRegistration = RankingFeatureRegistration { cell, _ , feature in
+            cell.prepare(with: feature)
+        }
+        let themeFeatureCellRegistration = ThemeFeatureRegistration { cell, _, feature in
             cell.prepare(with: feature)
         }
         
@@ -173,8 +185,12 @@ private extension AppViewController {
                     for: indexPath,
                     item: feature
                 )
-//            case .themeFeature(_):
-//                return UICollectionViewCell()
+            case .themeFeature(let feature):
+                return collectionView.dequeueConfiguredReusableCell(
+                    using: themeFeatureCellRegistration,
+                    for: indexPath,
+                    item: feature
+                )
             }
         }
     }
@@ -207,7 +223,7 @@ private extension AppViewController {
         
         snapshot.appendItems(Mocks.features, toSection: .feature)
         snapshot.appendItems(Mocks.rankingFeatures, toSection: .rankingFeature)
-//        snapshot.appendItems([Mocks.themeFeatures], toSection: .themeFeature)
+        snapshot.appendItems(Mocks.themeFeatures, toSection: .themeFeature)
         
         appDataSource.apply(snapshot, animatingDifferences: true)
     }

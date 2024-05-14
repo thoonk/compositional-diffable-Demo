@@ -10,7 +10,7 @@ import Foundation
 enum AppSection: Int, Hashable, CaseIterable, CustomStringConvertible {
     case feature
     case rankingFeature
-//    case themeFeature
+    case themeFeature
     
     var description: String {
         switch self {
@@ -18,8 +18,8 @@ enum AppSection: Int, Hashable, CaseIterable, CustomStringConvertible {
             return ""
         case .rankingFeature:
             return ""
-//        case .themeFeature:
-//            return ""
+        case .themeFeature:
+            return ""
         }
     }
 }
@@ -27,7 +27,7 @@ enum AppSection: Int, Hashable, CaseIterable, CustomStringConvertible {
 enum AppSectionItem: Hashable {
     case feature(Feature)
     case rankingFeature(RankingFeature)
-//    case themeFeature([ThemeFeature])
+    case themeFeature(ThemeFeature)
 }
 
 struct Feature: Hashable {

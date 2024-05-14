@@ -84,7 +84,7 @@ private extension RankingFeatureCell {
         contentView.addSubview(descriptionLabel)
         descriptionLabel.snp.makeConstraints {
             $0.top.equalTo(titleLabel.snp.bottom).offset(4)
-            $0.leading.trailing.equalTo(titleLabel.snp.leading)
+            $0.leading.equalTo(titleLabel.snp.leading)
             $0.trailing.equalTo(titleLabel.snp.trailing)
         }
         

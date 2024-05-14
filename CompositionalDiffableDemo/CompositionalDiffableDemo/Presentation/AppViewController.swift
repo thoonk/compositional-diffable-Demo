@@ -137,17 +137,17 @@ private extension AppViewController {
         
         return AppDataSource(collectionView: collectionView) { collectionView, indexPath, listItem in
             switch listItem {
-            case .feature(let features):
+            case .feature(let feature):
                 return collectionView.dequeueConfiguredReusableCell(
                     using: featureCellRegistration,
                     for: indexPath,
-                    item: features[indexPath.row]
+                    item: feature
                 )
-            case .rankingFeature(let features):
+            case .rankingFeature(let feature):
                 return collectionView.dequeueConfiguredReusableCell(
                     using: rankingFeatureCellRegistration,
                     for: indexPath,
-                    item: features[indexPath.row]
+                    item: feature
                 )
 //            case .themeFeature(_):
 //                return UICollectionViewCell()
@@ -160,10 +160,9 @@ private extension AppViewController {
         
         let sections = AppSection.allCases
         snapshot.appendSections(sections)
-        appDataSource.apply(snapshot, animatingDifferences: false)
         
-        snapshot.appendItems([Mocks.features], toSection: .feature)
-        snapshot.appendItems([Mocks.rankingFeatures], toSection: .rankingFeature)
+        snapshot.appendItems(Mocks.features, toSection: .feature)
+        snapshot.appendItems(Mocks.rankingFeatures, toSection: .rankingFeature)
 //        snapshot.appendItems([Mocks.themeFeatures], toSection: .themeFeature)
         
         appDataSource.apply(snapshot, animatingDifferences: true)

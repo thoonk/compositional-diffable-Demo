@@ -25,8 +25,8 @@ enum AppSection: Int, Hashable, CaseIterable, CustomStringConvertible {
 }
 
 enum AppSectionItem: Hashable {
-    case feature([Feature])
-    case rankingFeature([RankingFeature])
+    case feature(Feature)
+    case rankingFeature(RankingFeature)
 //    case themeFeature([ThemeFeature])
 }
 

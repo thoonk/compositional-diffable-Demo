@@ -23,6 +23,7 @@ final class RankingFeatureCell: UICollectionViewCell {
     private lazy var titleLabel = UILabel().then {
         $0.font = .systemFont(ofSize: 16.0, weight: .bold)
         $0.textColor = .label
+        $0.numberOfLines = 2
     }
     
     private lazy var descriptionLabel = UILabel().then {
@@ -32,10 +33,10 @@ final class RankingFeatureCell: UICollectionViewCell {
     
     private lazy var downloadButton = UIButton().then {
         $0.setTitle("받기", for: .normal)
-        $0.titleLabel?.font = .systemFont(ofSize: 13.0, weight: .bold)
+        $0.titleLabel?.font = .systemFont(ofSize: 15.0, weight: .bold)
         $0.setTitleColor(.systemBlue, for: .normal)
         $0.backgroundColor = .secondarySystemBackground
-        $0.layer.cornerRadius = 12.0
+        $0.layer.cornerRadius = 14.0
         $0.clipsToBounds = true
     }
     
@@ -93,8 +94,8 @@ private extension RankingFeatureCell {
             $0.leading.equalTo(titleLabel.snp.trailing)
             $0.trailing.equalToSuperview()
             $0.centerY.equalToSuperview()
-            $0.width.equalTo(50)
-            $0.height.equalTo(24)
+            $0.width.equalTo(70)
+            $0.height.equalTo(30)
         }
         
         contentView.addSubview(inAppPurchaseInfoLabel)

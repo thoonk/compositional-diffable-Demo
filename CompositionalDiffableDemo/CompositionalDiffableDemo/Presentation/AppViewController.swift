@@ -71,75 +71,66 @@ private extension AppViewController {
     }
     
     func getLayoutFeatureSection() -> NSCollectionLayoutSection {
+        // Item
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
         )
-        
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets  = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
         
+        // Group
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.9),
             heightDimension: .fractionalHeight(0.3)
         )
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         
+        // Section
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
-        
-        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1)),
-            elementKind: SupplementaryKind.footer,
-            alignment: .bottom
-        )
+        let sectionFooter = configureSeparatorFooter()
         section.boundarySupplementaryItems = [sectionFooter]
         
         return section
     }
     
     func getLayoutRankingFeatureSection() -> NSCollectionLayoutSection {
+        // Item
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
         )
-        
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets  = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
         
+        // Group
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.9),
             heightDimension: .fractionalHeight(1.0/3.0)
         )
         let group = NSCollectionLayoutGroup.vertical(layoutSize: groupSize, subitem: item, count: 3)
         
+        // Section
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPagingCentered
-        
-        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50)),
-            elementKind: SupplementaryKind.header,
-            alignment: .top
-        )
-        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1)),
-            elementKind: SupplementaryKind.footer,
-            alignment: .bottom
-        )
+        let sectionHeader = configureSectionHeader()
+        let sectionFooter = configureSeparatorFooter()
         section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
         
         return section
     }
     
     func getLayoutThemeFeatureSection() -> NSCollectionLayoutSection {
+        // Item
         let itemSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(1.0),
             heightDimension: .fractionalHeight(1.0)
         )
-        
         let item = NSCollectionLayoutItem(layoutSize: itemSize)
         item.contentInsets  = NSDirectionalEdgeInsets(top: 8, leading: 6, bottom: 8, trailing: 6)
         
+        // Group
         let groupSize = NSCollectionLayoutSize(
             widthDimension: .fractionalWidth(0.65),
             heightDimension: .fractionalHeight(0.25)
@@ -147,20 +138,11 @@ private extension AppViewController {
         let group = NSCollectionLayoutGroup.horizontal(layoutSize: groupSize, subitems: [item])
         group.contentInsets = NSDirectionalEdgeInsets(top: 0, leading: 10, bottom: 0, trailing: 0)
         
+        // Section
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
-        
-        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50)),
-            elementKind: SupplementaryKind.header,
-            alignment: .top
-        )
-        
-        let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
-            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1)),
-            elementKind: SupplementaryKind.footer,
-            alignment: .bottom
-        )
+        let sectionHeader = configureSectionHeader()
+        let sectionFooter = configureSeparatorFooter()
         section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
         
         return section
@@ -208,8 +190,7 @@ private extension AppViewController {
             }
         }
         
-        let footerRegistration = FooterRegistration(elementKind: SupplementaryKind.footer) { view, _, indexPath in
-        }
+        let footerRegistration = FooterRegistration(elementKind: SupplementaryKind.footer, handler: { _, _, _ in })
         
         appDataSource.supplementaryViewProvider = { [weak self] _ , kind, index in
             switch kind {
@@ -221,6 +202,28 @@ private extension AppViewController {
                 return UICollectionReusableView()
             }
         }
+    }
+    
+    func configureSectionHeader() -> NSCollectionLayoutBoundarySupplementaryItem {
+        return NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .estimated(50)
+            ),
+            elementKind: SupplementaryKind.header,
+            alignment: .top
+        )
+    }
+    
+    func configureSeparatorFooter() -> NSCollectionLayoutBoundarySupplementaryItem {
+        return NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(
+                widthDimension: .fractionalWidth(1.0),
+                heightDimension: .absolute(1)
+            ),
+            elementKind: SupplementaryKind.footer,
+            alignment: .bottom
+        )
     }
     
     func applyInitialSnapshots() {

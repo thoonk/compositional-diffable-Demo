@@ -150,12 +150,18 @@ private extension AppViewController {
         let section = NSCollectionLayoutSection(group: group)
         section.orthogonalScrollingBehavior = .groupPaging
         
+        let sectionHeader = NSCollectionLayoutBoundarySupplementaryItem(
+            layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .estimated(50)),
+            elementKind: SupplementaryKind.header,
+            alignment: .top
+        )
+        
         let sectionFooter = NSCollectionLayoutBoundarySupplementaryItem(
             layoutSize: NSCollectionLayoutSize(widthDimension: .fractionalWidth(1.0), heightDimension: .absolute(1)),
             elementKind: SupplementaryKind.footer,
             alignment: .bottom
         )
-        section.boundarySupplementaryItems = [sectionFooter]
+        section.boundarySupplementaryItems = [sectionHeader, sectionFooter]
         
         return section
     }
@@ -197,7 +203,9 @@ private extension AppViewController {
     
     func configureSupplementaryViewRegistration() {
         let headerRegistration = HeaderRegistration(elementKind: SupplementaryKind.header) { view, _, indexPath in
-            view.prepare(title: "지금 주목해야 할 앱", description: "새로 나온 앱과 업데이트")
+            if let section =  AppSection(rawValue: indexPath.section) {
+                view.prepare(title: section.headerTitle, description: section.description)
+            }
         }
         
         let footerRegistration = FooterRegistration(elementKind: SupplementaryKind.footer) { view, _, indexPath in

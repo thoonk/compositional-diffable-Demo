@@ -7,19 +7,30 @@
 
 import Foundation
 
-enum AppSection: Int, Hashable, CaseIterable, CustomStringConvertible {
+enum AppSection: Int, Hashable, CaseIterable {
     case feature
     case rankingFeature
     case themeFeature
     
-    var description: String {
+    var headerTitle: String? {
         switch self {
         case .feature:
-            return ""
+            return nil
         case .rankingFeature:
-            return ""
+            return "지금 주목해야 할 앱"
         case .themeFeature:
-            return ""
+            return "테마별 필수 앱"
+        }
+    }
+    
+    var description: String? {
+        switch self {
+        case .feature:
+            return nil
+        case .rankingFeature:
+            return "새로 나온 앱과 업데이트"
+        case .themeFeature:
+            return nil
         }
     }
 }

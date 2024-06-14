@@ -1,6 +1,6 @@
 # Compositional Layout + Diffable DataSource를 적용한 데모 프로젝트
 
-- AppStore 앱 레이아웃을 벤치마킹하여 구현 
+- AppStore 앱 레이아웃을 클론하여 구현 
 - Compositional 과 Diffable DataSource 적용
 - 코드 작성 편의성을 위한 SnapKit 과 Then 라이브러리 사용
   

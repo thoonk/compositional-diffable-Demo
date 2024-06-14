@@ -80,7 +80,8 @@ private extension FeatureCell {
         }
         
         contentView.addSubview(imageView)
-        imageView.snp.makeConstraints {            $0.top.equalTo(descriptionLabel.snp.bottom).offset(8)
+        imageView.snp.makeConstraints {            
+            $0.top.equalTo(descriptionLabel.snp.bottom).offset(8)
             $0.bottom.equalToSuperview().inset(8)
             $0.leading.trailing.equalToSuperview()
         }

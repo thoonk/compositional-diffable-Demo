@@ -3,6 +3,7 @@
 - AppStore 앱 레이아웃을 클론하여 구현 
 - Compositional 과 Diffable DataSource 적용
 - 코드 작성 편의성을 위한 SnapKit 과 Then 라이브러리 사용
+- iOS 14+
   
 ## Compositional Layout
 ### Compositional Layout 정의
@@ -184,5 +185,152 @@ func configureSeparatorFooter() -> NSCollectionLayoutBoundarySupplementaryItem {
         elementKind: SupplementaryKind.footer,
         alignment: .bottom
     )
+}
+```
+
+## Diffable DataSource
+### Section 및 Item 정의
+Hashable 프로토콜 채택
+```
+enum AppSection: Int, Hashable, CaseIterable {
+    case feature
+    case rankingFeature
+    case themeFeature
+    
+    var headerTitle: String? {
+        switch self {
+        case .feature:
+            return nil
+        case .rankingFeature:
+            return "지금 주목해야 할 앱"
+        case .themeFeature:
+            return "테마별 필수 앱"
+        }
+    }
+    
+    var description: String? {
+        switch self {
+        case .feature:
+            return nil
+        case .rankingFeature:
+            return "새로 나온 앱과 업데이트"
+        case .themeFeature:
+            return nil
+        }
+    }
+}
+
+enum AppSectionItem: Hashable {
+    case feature(Feature)
+    case rankingFeature(RankingFeature)
+    case themeFeature(ThemeFeature)
+}
+
+struct Feature: Hashable {
+    let type: String
+    let title: String
+    let description: String
+    private let identifier = UUID()
+}
+
+struct RankingFeature: Hashable {
+    let title: String
+    let description: String
+    let isInAppPurchase: Bool
+    private let identifier = UUID()
+}
+
+struct ThemeFeature: Hashable {
+    let title: String
+    private let identifier = UUID()
+}
+```
+
+### Cell 등록 및 DataSource 정의
+
+```
+fileprivate typealias AppDataSource = UICollectionViewDiffableDataSource<AppSection, AppSectionItem>
+private typealias FeatureRegistration = UICollectionView.CellRegistration<FeatureCell, Feature>
+private typealias RankingFeatureRegistration = UICollectionView.CellRegistration<RankingFeatureCell, RankingFeature>
+private typealias ThemeFeatureRegistration = UICollectionView.CellRegistration<ThemeFeatureCell, ThemeFeature>
+
+private lazy var appDataSource = configureAppDataSource()
+
+func configureAppDataSource() -> AppDataSource {
+    let featureCellRegistration = FeatureRegistration { cell, _ , feature in
+        cell.prepare(with: feature)
+    }
+    let rankingFeatureCellRegistration = RankingFeatureRegistration { cell, _ , feature in
+        cell.prepare(with: feature)
+    }
+    let themeFeatureCellRegistration = ThemeFeatureRegistration { cell, _, feature in
+        cell.prepare(with: feature)
+    }
+    
+    return AppDataSource(collectionView: collectionView) { collectionView, indexPath, listItem in
+        switch listItem {
+        case .feature(let feature):
+            return collectionView.dequeueConfiguredReusableCell(
+                using: featureCellRegistration,
+                for: indexPath,
+                item: feature
+            )
+        case .rankingFeature(let feature):
+            return collectionView.dequeueConfiguredReusableCell(
+                using: rankingFeatureCellRegistration,
+                for: indexPath,
+                item: feature
+            )
+        case .themeFeature(let feature):
+            return collectionView.dequeueConfiguredReusableCell(
+                using: themeFeatureCellRegistration,
+                for: indexPath,
+                item: feature
+            )
+        }
+    }
+}
+```
+
+### Header 및 Footer 등록
+```
+private typealias HeaderRegistration = UICollectionView.SupplementaryRegistration<HeaderView>
+private typealias FooterRegistration = UICollectionView.SupplementaryRegistration<FooterView>
+
+func configureSupplementaryViewRegistration() {
+    let headerRegistration = HeaderRegistration(elementKind: SupplementaryKind.header) { view, _, indexPath in
+        if let section =  AppSection(rawValue: indexPath.section) {
+            view.prepare(title: section.headerTitle, description: section.description)
+        }
+    }
+    
+    let footerRegistration = FooterRegistration(elementKind: SupplementaryKind.footer, handler: { _, _, _ in })
+    
+    appDataSource.supplementaryViewProvider = { [weak self] _ , kind, index in
+        switch kind {
+        case SupplementaryKind.header:
+            return self?.collectionView.dequeueConfiguredReusableSupplementary(using: headerRegistration, for: index)
+        case SupplementaryKind.footer:
+            return self?.collectionView.dequeueConfiguredReusableSupplementary(using: footerRegistration, for: index)
+        default:
+            return UICollectionReusableView()
+        }
+    }
+}
+```
+
+### Mock 데이터 스냅샷 적용
+```
+func applyInitialSnapshots() {
+    var snapshot = NSDiffableDataSourceSnapshot<AppSection, AppSectionItem>()
+    
+    let sections = AppSection.allCases
+    snapshot.appendSections(sections)
+    
+    snapshot.appendItems(Mocks.features, toSection: .feature)
+    snapshot.appendItems(Mocks.rankingFeatures, toSection: .rankingFeature)
+    snapshot.appendItems(Mocks.themeFeatures, toSection: .themeFeature)
+    
+    appDataSource.apply(snapshot, animatingDifferences: true)
 }
 ```

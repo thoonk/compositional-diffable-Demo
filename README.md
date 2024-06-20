@@ -10,22 +10,22 @@
 하나의 콜렉션 뷰에 섹션 별로 다른 레이아웃 정의
 
 ```
-    private lazy var collectionView = UICollectionView(
-        frame: .zero,
-        collectionViewLayout: UICollectionViewCompositionalLayout { section, env -> NSCollectionLayoutSection? in
-            guard let sectionKind = AppSection(rawValue: section) else { return nil }
-            switch sectionKind {
-            case .feature:
-                return self.getLayoutFeatureSection()
-            case .rankingFeature:
-                return self.getLayoutRankingFeatureSection()
-            case .themeFeature:
-                return self.getLayoutThemeFeatureSection()
-            }
-        }).then {
-            $0.showsHorizontalScrollIndicator = false
-            $0.contentInset = .zero
+private lazy var collectionView = UICollectionView(
+    frame: .zero,
+    collectionViewLayout: UICollectionViewCompositionalLayout { section, env -> NSCollectionLayoutSection? in
+        guard let sectionKind = AppSection(rawValue: section) else { return nil }
+        switch sectionKind {
+        case .feature:
+            return self.getLayoutFeatureSection()
+        case .rankingFeature:
+            return self.getLayoutRankingFeatureSection()
+        case .themeFeature:
+            return self.getLayoutThemeFeatureSection()
         }
+    }).then {
+        $0.showsHorizontalScrollIndicator = false
+        $0.contentInset = .zero
+    }
 ```
 
 ### Section 정의
@@ -59,8 +59,10 @@ enum AppSection: Int, Hashable, CaseIterable {
 }
 ```
 
-### 최상단 섹션 레이아웃 정의
-다음 아이템 노출을 위해 group .fractionalWidth(0.9) 설정 및 horizontal로 설정
+### Feature 섹션 레이아웃 정의
+<img src = "Images/image_feature.png" width = "600" hegiht = "400">
+
+이전 및 다음 아이템 노출을 위해 group .fractionalWidth(0.9) 설정 및 horizontal로 설정
 ```
 func getLayoutFeatureSection() -> NSCollectionLayoutSection {
     let itemSize = NSCollectionLayoutSize(
@@ -91,9 +93,10 @@ func getLayoutFeatureSection() -> NSCollectionLayoutSection {
 }
 ```
 
-### 랭킹 차트 섹션 정의
+### Ranking Feature 섹션 정의
+<img src = "Images/image_ranking_feature.png" width = "600" hegiht = "400">      
 
-다음 아이템 노출을 위해 group `.fractionalWidth(0.9)` 설정 
+이전 또는 다음 아이템 노출을 위해 group `.fractionalWidth(0.9)` 설정 
 
 한 Group 당 3개의 item을 노출하기 위해 group `.fractionalHeight(1.0/3.0)` 설정
 
@@ -125,7 +128,8 @@ func getLayoutRankingFeatureSection() -> NSCollectionLayoutSection {
 }
 ```
 
-### 테마 섹션 정의
+### Theme Feature 섹션 정의
+<img src = "Images/image_theme_feature.png" width = "600" hegiht = "400">
 
 다음 아이템 노출을 위해 group `.fractionalWidth(0.65)` 설정
 
@@ -334,3 +338,22 @@ func applyInitialSnapshots() {
     appDataSource.apply(snapshot, animatingDifferences: true)
 }
 ```
+
+## 💡 인사이트
+
+### Compositional Layout
+기존 레이아웃으로는 TableView에 CollectionView를 함께 사용하여 구현했음.   
+- 뎁스가 많아지고 코드량이 많아져 공수가 더 소요되었음.  
+
+Compositional Layout을 사용해서 구현했을 때, 하나의 CollectionView로 섹션에 따라 다양하고 복잡한 레이아웃을 간편하게 만들 수 있었음.  
+- 기존 레이아웃에 비해 뎁스가 줄어들고 성능이 높아짐.
+- 복잡한 레이아웃을 선언형 API로 간단하게 구축할 수 있음.
+
+### Diffable DataSource
+기존 DataSource방식에서는 시간이 지남에 따라 변하는 버전이 맞지 않는 이슈(UI와 DataSource 맞지 않음)가 있어 `reloadData()` 호출을 통해 해결했음. 하지만 애니메이션이 적용되지 않아 사용자 경험이 저하됨.
+- 위와 같은 이슈를 해결하기 위해 UI와 DataSource를 중앙화하여 관리하므로 이슈가 해결되었음.
+- IndexPath가 아닌 Snapshot을 사용하고 Snapsoht의 Section 및 Item identifier (Unique identifier, Hashable 준수)를 이용하여 UI 업데이트함.
+- 데이터가 변경될 때마다 새로운 Snapshot을 생성하고 이를 다시 DataSource에 적용하는 과정에서 애니메이션을 통해 자연스럽게 업데이트할 수 있음.
+
+-> 변경사항이 있을 때 애니메이션이 적용되어 자연스럽게 업데이트되는 것과 UI와 DataSource 간에 버전이 맞지 않아 크래시나 에러가 발생할 일이 없음.    
+-> Hashable 기반으로 O(n)의 빠른 성능을 가지고 있음. (기존 DataSource는 일반적으로 O(n^2))
